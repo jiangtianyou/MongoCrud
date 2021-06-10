@@ -17,22 +17,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Max;
 
-import com.wdit.common.utils.EntitySetter;
-import com.wdit.common.utils.MongoUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.annotation.Validated;
 import com.wdit.common.msg.ReturnMsg;
+import com.wdit.common.utils.EntitySetter;
+import com.wdit.common.utils.MongoUtil;
 import com.wdit.common.vo.PageVo;
 import com.wdit.common.persistence.Page;
 import static com.wdit.common.utils.ApiUtils.buildPage;
 import ${containPackageName}.${shortBeanName}Dao;
 import ${containPackageName}.${shortBeanName}Entity;
-import ${containPackageName}.${shortBeanName}ParamVo;
+import ${containPackageName}.${shortBeanName}PageVo;
 import ${containPackageName}.${shortBeanName}Api;
 import com.wdit.common.vo.PageVo;
+import com.wdit.common.vo.IdVo;
+import javax.validation.Valid;
+
 
 @RestController
 @Validated
@@ -43,7 +46,14 @@ public class ${shortBeanName}Controller extends ${baseController} implements ${s
 
 
     @Override
-    public ReturnMsg<String> insert(<@fun.insertParam "controller"/>){
+    public ReturnMsg<String> insert(@Valid ${shortBeanName}Vo vo){
+
+        <#list fields as fieldItem >
+            ${fieldItem.fieldType} ${fieldItem.fieldName?uncap_first} =  vo.get${fieldItem.fieldName?cap_first}();
+        </#list>
+        if(com.wdit.common.utils.StringUtils.isAnyBlank("")){
+            return failResult("不能为空");
+        }
         ${fullBeanName} entity = new EntitySetter<>(${fullBeanName}::new)
         <#list fields as fieldItem >
             <#if fieldItem.fieldName == "id">
@@ -67,13 +77,17 @@ public class ${shortBeanName}Controller extends ${baseController} implements ${s
     }
 
     @Override
-    public ReturnMsg<Object> delete(@NotBlank String id){
+    public ReturnMsg<Object> delete(@Valid IdVo vo){
+        String id = vo.getId();
         ${shortBeanName?uncap_first}Service.delete(id);
         return successResult();
     }
 
     @Override
-    public ReturnMsg<Object> update(<@fun.updateParam "controller"/>){
+    public ReturnMsg<Object> update(@Valid ${shortBeanName}Vo vo){
+        <#list fields as fieldItem >
+            ${fieldItem.fieldType} ${fieldItem.fieldName?uncap_first} =  vo.get${fieldItem.fieldName?cap_first}();
+        </#list>
         ${fullBeanName} entity = ${shortBeanName?uncap_first}Service.get(id);
         if(entity == null){
             return failResult("找不到id对应信息");
@@ -95,7 +109,8 @@ public class ${shortBeanName}Controller extends ${baseController} implements ${s
     }
 
     @Override
-    public ReturnMsg<${shortBeanName}Entity> get(@RequestParam(name="id") @NotBlank String id){
+    public ReturnMsg<${shortBeanName}Entity> get(@Valid IdVo vo){
+        String id = vo.getId();
         ${fullBeanName} entity = ${shortBeanName?uncap_first}Service.get(id);
         if(entity == null){
             return failResult("找不到id对应信息");
@@ -105,9 +120,7 @@ public class ${shortBeanName}Controller extends ${baseController} implements ${s
     }
 
     @Override
-    public ReturnMsg<PageVo<${shortBeanName}Entity>> list(@NotBlank String siteId, @Min(1) Integer pageNo, @Min(1) Integer pageSize,
-                                                     Date startDate, Date endDate ){
-        ${shortBeanName}ParamVo vo = new ${shortBeanName}ParamVo(siteId, pageNo, pageSize, startDate, endDate);
+    public ReturnMsg<PageVo<${shortBeanName}Entity>> list(@Valid ${shortBeanName}PageVo vo){
         PageVo<${shortBeanName}Entity> result = ${shortBeanName?uncap_first}Service.findAdminPage(vo);
             return successResult(result);
     }

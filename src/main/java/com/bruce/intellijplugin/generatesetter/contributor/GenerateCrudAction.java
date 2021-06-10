@@ -1,6 +1,7 @@
 package com.bruce.intellijplugin.generatesetter.contributor;
 
 import com.bruce.intellijplugin.generatesetter.bean.BeanInfo;
+import com.bruce.intellijplugin.generatesetter.bean.FieldInfo;
 import com.bruce.intellijplugin.generatesetter.utils.MyUtils;
 import com.bruce.intellijplugin.generatesetter.utils.PsiClassUtils;
 import com.bruce.intellijplugin.generatesetter.utils.PsiFileUtils;
@@ -20,10 +21,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -94,38 +92,55 @@ public class GenerateCrudAction extends AnAction {
 
 
 	private List<PsiJavaFile> getFinalFiles(Project project, BeanInfo beanInfo) {
-		PsiJavaFile entity = _createJavaFile(project, "entity.ftl", beanInfo);
-		PsiJavaFile paramVo = _createJavaFile(project, "param_vo.ftl",  beanInfo);
-		PsiJavaFile dao = _createJavaFile(project, "dao.ftl",  beanInfo);
-		PsiJavaFile service = _createJavaFile(project, "service.ftl", beanInfo);
-		PsiJavaFile controllerApi = _createJavaFile(project, "controller_api.ftl", beanInfo);
-		PsiJavaFile controller = _createJavaFile(project, "controller.ftl", beanInfo);
-		return Arrays.asList(entity,paramVo,dao,service,controllerApi,controller);
+		PsiJavaFile entity = this._createJavaFile(project, "entity.ftl", beanInfo);
+		PsiJavaFile pageParamVo = this._createJavaFile(project, "page_param.ftl", beanInfo);
+		PsiJavaFile entityParamVo = this._createJavaFile(project, "entity_param.ftl", beanInfo);
+		PsiJavaFile dao = this._createJavaFile(project, "dao.ftl", beanInfo);
+		PsiJavaFile service = this._createJavaFile(project, "service.ftl", beanInfo);
+		PsiJavaFile controllerApi = this._createJavaFile(project, "controller_api.ftl", beanInfo);
+		PsiJavaFile controller = this._createJavaFile(project, "controller.ftl", beanInfo);
+		PsiJavaFile client = this._createJavaFile(project, "client.ftl", beanInfo);
+		return Arrays.asList(entity, entityParamVo, pageParamVo, dao, service, controllerApi, controller, client);
 	}
 
 
+
+
 	private PsiJavaFile _createJavaFile(Project project, String templateName, BeanInfo beanInfo) {
-		// 根据TemplateName计算出FileName
-		Map<String, String> map = new HashMap<>();
+
+		Map<String, String> map = new HashMap();
 		String bean = beanInfo.getShortBeanName();
 		map.put("controller.ftl", bean + "Controller.java");
 		map.put("controller_api.ftl", bean + "Api.java");
 		map.put("dao.ftl", bean + "Dao.java");
 		map.put("entity.ftl", bean + "Entity.java");
-		map.put("param_vo.ftl", bean + "ParamVo.java");
+		map.put("page_param.ftl", bean + "PageVo.java");
+		map.put("client.ftl", bean + "Client.java");
+		map.put("entity_param.ftl", bean + "Vo.java");
 		map.put("service.ftl", bean + "Service.java");
-		String fileName = map.get(templateName);
+		String fileName = (String)map.get(templateName);
 		if (fileName == null) {
 			throw new IllegalArgumentException("无法识别模板名称");
+		} else {
+			FreemarkerTool tool = new FreemarkerTool();
+			String text = tool.processString(templateName, beanInfo);
+			text = text.replaceAll("\r", "");
+			PsiJavaFile psiFile = (PsiJavaFile)PsiFileFactory.getInstance(project).createFileFromText(fileName, StdFileTypes.JAVA, text);
+			PsiJavaFile javaFile = (PsiJavaFile)PsiFileUtils.beautify(project, psiFile);
+			return javaFile;
 		}
-		FreemarkerTool tool = new FreemarkerTool();
-		String text = tool.processString(templateName, beanInfo);
-		text = text.replaceAll("\r", "");
-		PsiJavaFile psiFile = (PsiJavaFile) PsiFileFactory.getInstance(project).createFileFromText(fileName,
-				StdFileTypes.JAVA, text);
+	}
 
-		PsiJavaFile javaFile = (PsiJavaFile)PsiFileUtils.beautify(project, psiFile);
-		return javaFile;
+	public static void main(String[] args) {
+		FreemarkerTool tool = new FreemarkerTool();
+		List<FieldInfo> fileds = new ArrayList<>();
+
+		FieldInfo myDate = new FieldInfo("testField", "test_field", "Date", true);
+		fileds.add(myDate);
+		BeanInfo beanInfo = new BeanInfo("stream","com.base.BaseController","com.package.test","com.pageage.test.testController","com.test.People","People",fileds);
+		String text = tool.processString("service.ftl", beanInfo);
+		text = text.replaceAll("\r", "");
+		System.out.println(text);
 	}
 
 }

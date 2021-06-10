@@ -15,14 +15,13 @@ import java.util.List;
 @Service
 public class ${shortBeanName}Dao extends com.wdit.common.mongo.base.MongoBaseDao<${fullBeanName}>{
 
-    public <R> PageVo<R> findAdminPage( ${containPackageName}.${shortBeanName}ParamVo vo,
+    public <R> PageVo<R> findAdminPage( ${containPackageName}.${shortBeanName}PageVo vo,
             java.util.function.Function<${fullBeanName}, R> converter) {
-        String siteId = vo.getSiteId();
         Integer pageNo = vo.getPageNo();
         Integer pageSize = vo.getPageSize();
         java.util.Date startDate = vo.getStartDate();
         java.util.Date endDate = vo.getEndDate();
-        Criteria criteria = Criteria.where("site_id").is(siteId);
+        Criteria criteria = new Criteria();
     //    if (StringUtils.isNotBlank(sth)) {
     //        criteria.and("sth").is(sth);
     //    }
@@ -31,6 +30,7 @@ public class ${shortBeanName}Dao extends com.wdit.common.mongo.base.MongoBaseDao
                                         .lte(MongoUtil.getMongoDate(MongoUtil.getDayEnd(endDate)));
         }
         com.wdit.common.vo.PageVo<R> page = new com.wdit.common.vo.PageVo<>(pageNo, pageSize);
+        page.setOrderBy(vo.getOrderBy());
         return findPage(Query.query(criteria), page,converter);
     }
 

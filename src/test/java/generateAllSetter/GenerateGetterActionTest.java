@@ -104,5 +104,8 @@ public class GenerateGetterActionTest extends BaseTest {
 //	public void test(){
 //
 //	}
+public static void main(String[] args) {
+    // 测试freemarker的使用
 
+}
 }

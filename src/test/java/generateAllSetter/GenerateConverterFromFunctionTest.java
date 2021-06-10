@@ -170,51 +170,6 @@ public class GenerateConverterFromFunctionTest extends BaseTest {
 //    }
 
 
-	public void test(Test tt) {
-		String name = tt.getName();
-		Integer number = tt.getNumber();
-		Date day = tt.getDay();
-		Test test = tt.getTest();
 
-
-	}
-
-	class Test{
-		private String name;
-		private Integer number;
-		private Date day;
-		private Test test;
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public Integer getNumber() {
-			return number;
-		}
-
-		public void setNumber(Integer number) {
-			this.number = number;
-		}
-
-		public Date getDay() {
-			return day;
-		}
-
-		public void setDay(Date day) {
-			this.day = day;
-		}
-
-		public Test getTest() {
-			return test;
-		}
-
-		public void setTest(Test test) {
-			this.test = test;
-		}
-	}
 
 }

@@ -5,7 +5,6 @@ import com.wdit.common.utils.StringUtils;
 
 import ${containPackageName}.${shortBeanName}Dao;
 import ${containPackageName}.${shortBeanName}Entity;
-import ${containPackageName}.${shortBeanName}ParamVo;
 import com.wdit.common.vo.PageVo;
 
 @Service
@@ -19,7 +18,7 @@ public class ${shortBeanName}Service {
         dao.save(entity);
     }
 
-    public PageVo<${shortBeanName}Entity> findAdminPage(${shortBeanName}ParamVo vo) {
+    public PageVo<${shortBeanName}Entity> findAdminPage(${shortBeanName}PageVo vo) {
         PageVo<${shortBeanName}Entity>  result =  dao.findAdminPage(vo, ${shortBeanName}Service::toEntity);
         return result;
     }
@@ -36,15 +35,6 @@ public class ${shortBeanName}Service {
         dao.deleteById(id);
     }
 
-    public ${fullBeanName} getBy(String siteId, String sth) {
-        if (StringUtils.isAnyBlank(siteId, sth)) {
-            return null;
-        }
-        ${fullBeanName} entity = new ${fullBeanName}();
-        entity.setSiteId(siteId);
-//      entity.setSth(sth);
-        return dao.findOne(entity);
-    }
 
     public static ${shortBeanName}Entity toEntity(${fullBeanName} entity) {
         ${shortBeanName}Entity rtn = new ${shortBeanName}Entity();
