@@ -1,0 +1,68 @@
+<idea-plugin>
+    <id>com.jty.MongoEasyCrud</id>
+    <name>MongoEasyCrud</name>
+    <vendor url="https://github.com/jiangtianyou/intellij-generateAllSetMethod">jty</vendor>
+
+    <description>
+        <![CDATA[
+        <ul>
+            <li>Add @JsonProperty to plain pojo</li>
+            <li>Add CRUD java file according the JavaBean of Dao</li>
+            <li>Generate all setter/getter in a method body</li>
+        </ul>
+    ]]>
+    </description>
+
+    <version>1.0.0</version>
+    <vendor>jty</vendor>
+    <idea-version since-build="183.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <intentionAction id="generateAllSetterAction">
+            <className>com.bruce.intellijplugin.generatesetter.actions.GenerateAllSetterAction</className>
+        </intentionAction>
+
+        <intentionAction>
+            <className>com.bruce.intellijplugin.generatesetter.actions.GenerateAllSetterNoDefaultValueAction</className>
+        </intentionAction>
+
+        <intentionAction>
+            <className>com.bruce.intellijplugin.generatesetter.actions.GenerateSetterGetterFromFunctionAction</className>
+        </intentionAction>
+
+        <intentionAction>
+            <className>com.bruce.intellijplugin.generatesetter.actions.GenerateGetterAction</className>
+        </intentionAction>
+
+
+
+        <runLineMarkerContributor language="JAVA"
+                                  implementationClass="com.bruce.intellijplugin.generatesetter.contributor.GenerateApiContributor" />
+
+        <runLineMarkerContributor language="JAVA"
+                                  implementationClass="com.bruce.intellijplugin.generatesetter.contributor.GenerateCrudContributor" />
+
+    </extensions>
+    <actions>
+        <action id="EditorBasics.EditorIllustrationAction"
+                class="com.bruce.intellijplugin.generatesetter.actions.jsonproperty.AddJsonPropertyAction"
+                text="Add @JsonProperty to Pojo"
+                description="Add @JsonProperty to Pojo"
+                icon="EditorBasicsIcons.sdk_default_icon">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action id="GenerateApiAction"
+                class="com.bruce.intellijplugin.generatesetter.actions.GenerateApiAction"
+                text="生成api文档到postman"
+                description="Create postman api" popup="true" >
+        </action>
+
+        <action id="GenCodeAction"
+                class="com.bruce.intellijplugin.generatesetter.contributor.GenerateCrudAction"
+                text="一键生成Crud代码"
+                description="Auto create curd" popup="true" >
+        </action>
+
+    </actions>
+</idea-plugin>
