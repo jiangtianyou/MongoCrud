@@ -21,11 +21,11 @@ public class GenerateCrudContributor extends RunLineMarkerContributor {
 	public Info getInfo(@NotNull PsiElement psiElement) {
 		AnAction genCodeAction = ActionManager.getInstance().getAction("GenCodeAction");
 		if (psiElement instanceof PsiKeyword && Objects.equals("class", psiElement.getText())) {
-			// 这是出于class行
+			//是class
 			PsiClass clazz = PsiTreeUtil.getParentOfType(psiElement, PsiClass.class);
 			if (clazz != null) {
 				String qualifiedName = clazz.getQualifiedName();
-				if (!qualifiedName.contains("entity")) {
+				if ( qualifiedName != null && !qualifiedName.contains("model")) {
 					return  null;
 				}
 				if (!StringUtils.endsWithAny(qualifiedName, "vo", "Vo", "Entity", "entity","Controller")) {

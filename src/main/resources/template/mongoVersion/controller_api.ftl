@@ -42,7 +42,7 @@ public interface ${shortBeanName}Api {
     /**
     * 新增
     */
-    @PostMapping("/api/${moduleName}/${shortBeanName}/insert")
+    @PostMapping("/api/${moduleName}/${shortBeanName?uncap_first}/insert")
     ReturnMsg<String> insert(@RequestBody @Valid ${shortBeanName}Vo vo);
 
     /**

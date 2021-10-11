@@ -189,4 +189,29 @@ public class PsiToolUtils {
         }
         return false;
     }
+
+    public static void main(String[] args) {
+        String s = "package com.gmmsj.modules.user.model;\n" +
+                "\n" +
+                "import com.baomidou.mybatisplus.annotation.TableName;\n" +
+                "import com.gmmsj.modules.base.BaseEntity;\n" +
+                "\n" +
+                "@TableName(value = \"test_user\",schema = \"UserCenter\")\n" +
+                "public class User extends BaseEntity {\n" +
+                "\n" +
+                "\tprivate String name;\n" +
+                "\n" +
+                "\tpublic String getName() {\n" +
+                "\t\treturn name;\n" +
+                "\t}\n" +
+                "\n" +
+                "\tpublic void setName(String name) {\n" +
+                "\t\tthis.name = name;\n" +
+                "\t}\n" +
+                "}";
+
+        boolean setterGetter = isSetterGetter(s);
+        System.out.println(setterGetter);
+
+    }
 }
